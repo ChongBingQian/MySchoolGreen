@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useSession, getConfig, loginWithPassword } from 'modelence/client';
+import { useSession, getConfig, loginWithPassword } from '@/client/lib/cloudflare/modelenceClient';
 
-const AUTO_LOGIN_DISABLED_KEY = 'modelence:autoLoginDisabled';
+const AUTO_LOGIN_DISABLED_KEY = 'cloudflare:autoLoginDisabled';
 
 export function useAutoLogin() {
   const { user } = useSession();

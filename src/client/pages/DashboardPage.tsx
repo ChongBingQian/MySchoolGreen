@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { modelenceQuery } from '@modelence/react-query';
+import { modelenceQuery } from '@/client/lib/cloudflare/modelenceReactQuery';
 import { Leaf, Smartphone, School, Award, Wind, Droplets } from 'lucide-react';
 import Page from '@/client/components/Page';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { logout } from 'modelence/client';
+import { logout } from '@/client/lib/cloudflare/modelenceClient';
 
 export default function LogoutPage() {
   useEffect(() => {

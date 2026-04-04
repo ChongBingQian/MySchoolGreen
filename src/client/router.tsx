@@ -7,7 +7,7 @@ import {
   useLocation,
   useSearchParams,
 } from 'react-router-dom';
-import { useSession } from 'modelence/client';
+import { useSession } from '@/client/lib/cloudflare/modelenceClient';
 
 // For guest-only routes (login, signup) - redirects to home if already logged in
 function GuestRoute() {

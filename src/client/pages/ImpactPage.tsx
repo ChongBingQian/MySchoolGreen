@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { modelenceQuery } from '@modelence/react-query';
+import { modelenceQuery } from '@/client/lib/cloudflare/modelenceReactQuery';
 import Page from '@/client/components/Page';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import LoadingSpinner from '@/client/components/LoadingSpinner';

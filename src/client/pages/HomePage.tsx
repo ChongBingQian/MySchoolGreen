@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useSession } from 'modelence/client';
+import { useSession } from '@/client/lib/cloudflare/modelenceClient';
 import {
   Leaf,
   Smartphone,

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { modelenceQuery, modelenceMutation, createQueryKey } from '@modelence/react-query';
+import { modelenceQuery, modelenceMutation, createQueryKey } from '@/client/lib/cloudflare/modelenceReactQuery';
 import { RefreshCw, Plus, Calendar } from 'lucide-react';
 
 type ExampleItem = {

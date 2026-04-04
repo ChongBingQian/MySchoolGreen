@@ -1,4 +1,4 @@
-import { useSession } from 'modelence/client';
+import { useSession } from '@/client/lib/cloudflare/modelenceClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import Page from '@/client/components/Page';
 

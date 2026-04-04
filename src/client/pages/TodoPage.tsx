@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { modelenceQuery, modelenceMutation, createQueryKey } from '@modelence/react-query';
+import { modelenceQuery, modelenceMutation, createQueryKey } from '@/client/lib/cloudflare/modelenceReactQuery';
 import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';

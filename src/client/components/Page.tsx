@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useSession } from 'modelence/client';
+import { useSession } from '@/client/lib/cloudflare/modelenceClient';
 import LoadingSpinner from '@/client/components/LoadingSpinner';
 import { Button } from '@/client/components/ui/Button';
 import { cn } from '@/client/lib/utils';
