@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "npm run deploy:cloudflare",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name myschoolgreen",
+    "deploy:worker": "wrangler deploy --config wrangler.worker.toml",
+    "deploy:cloudflare": "npm run deploy:pages && npm run deploy:worker",
     "start": "vite preview",
     "lint": "eslint src/client src/types --ext .ts,.tsx",
     "lint:fix": "eslint src/client src/types --ext .ts,.tsx --fix",
