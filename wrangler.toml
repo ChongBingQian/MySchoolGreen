@@ -1,0 +1,9 @@
+name = "myschoolgreen"
+compatibility_date = "2026-04-04"
+
+[build]
+command = "cd MySchoolGreen && npm install && npm run build"
+
+[assets]
+directory = "MySchoolGreen/dist"
+not_found_handling = "single-page-application"
