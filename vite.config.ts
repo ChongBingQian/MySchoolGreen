@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   root: 'src/client',
-  base: './',
+  base: '/',
   plugins: [react()],
   build: {
     outDir: '../../dist',
@@ -18,10 +18,10 @@ export default defineConfig({
         __dirname,
         './src/client/lib/cloudflare/modelenceReactQuery.ts'
       ),
-    }
+    },
   },
   server: {
-    host: "0.0.0.0",
-    allowedHosts: true
-  }
+    host: '0.0.0.0',
+    allowedHosts: true,
+  },
 });
