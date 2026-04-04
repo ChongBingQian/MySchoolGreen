@@ -1,0 +1,9 @@
+name = "myschoolgreen"
+compatibility_date = "2026-04-04"
+
+[build]
+command = "npm install && npm run build"
+
+[assets]
+directory = ".modelence/build/client"
+not_found_handling = "single-page-application"

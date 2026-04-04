@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "modelence dev",
     "build": "modelence build",
+    "deploy": "npm run build && wrangler deploy",
     "start": "node .modelence/build/app.mjs",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
