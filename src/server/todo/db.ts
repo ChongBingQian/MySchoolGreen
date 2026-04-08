@@ -6,7 +6,7 @@ export const dbTodoItems = new Store('todoItems', {
     description: schema.string().optional(),
     completed: schema.boolean(),
     createdAt: schema.date(),
-    userId: schema.userId(),
+    userId: schema.objectId(),
   },
   indexes: [{ key: { userId: 1 } }, { key: { userId: 1, completed: 1 } }],
 });

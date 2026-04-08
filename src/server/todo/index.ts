@@ -1,8 +1,9 @@
 import z from 'zod';
-import { AuthError } from 'modelence';
-import { Module, ObjectId, UserInfo, getConfig } from 'modelence/server';
+import { Module, ObjectId, getConfig } from 'modelence/server';
 import { dbTodoItems } from './db';
 import { dailyCleanupCron } from './cron';
+
+const PUBLIC_SCOPE_USER_ID = new ObjectId('000000000000000000000001');
 
 // Validation schemas
 const createTodoSchema = z.object({
@@ -25,13 +26,6 @@ const deleteTodoSchema = z.object({
   todoId: z.string(),
 });
 
-// Helper to ensure user is authenticated
-function requireAuth(user: UserInfo | null): asserts user is UserInfo {
-  if (!user) {
-    throw new AuthError('Not authenticated');
-  }
-}
-
 export default new Module('todo', {
   configSchema: {
     itemsPerPage: {
@@ -44,15 +38,9 @@ export default new Module('todo', {
   stores: [dbTodoItems],
 
   queries: {
-    getTodo: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    getTodo: async (args: unknown) => {
       const { todoId } = getTodoSchema.parse(args);
       const todo = await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
-
-      if (todo.userId.toString() !== user.id) {
-        throw new AuthError('Not authorized');
-      }
 
       return {
         _id: todo._id.toString(),
@@ -63,12 +51,10 @@ export default new Module('todo', {
       };
     },
 
-    getTodos: async (_args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    getTodos: async (_args: unknown) => {
       const itemsPerPage = getConfig('todo.itemsPerPage') as number;
       const todos = await dbTodoItems.fetch(
-        { userId: new ObjectId(user.id) },
+        { userId: PUBLIC_SCOPE_USER_ID },
         { limit: itemsPerPage, sort: { createdAt: -1 } }
       );
 
@@ -83,9 +69,7 @@ export default new Module('todo', {
   },
 
   mutations: {
-    createTodo: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    createTodo: async (args: unknown) => {
       const { title, description } = createTodoSchema.parse(args);
 
       const result = await dbTodoItems.insertOne({
@@ -93,21 +77,16 @@ export default new Module('todo', {
         description: description || '',
         completed: false,
         createdAt: new Date(),
-        userId: new ObjectId(user.id),
+        userId: PUBLIC_SCOPE_USER_ID,
       });
 
       return { _id: result.insertedId.toString() };
     },
 
-    updateTodo: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    updateTodo: async (args: unknown) => {
       const { todoId, title, description, completed } = updateTodoSchema.parse(args);
 
-      const todo = await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
-      if (todo.userId.toString() !== user.id) {
-        throw new AuthError('Not authorized');
-      }
+      await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
 
       const updateFields: Record<string, unknown> = {};
       if (title !== undefined) updateFields.title = title;
@@ -130,30 +109,20 @@ export default new Module('todo', {
       return { success: true };
     },
 
-    deleteTodo: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    deleteTodo: async (args: unknown) => {
       const { todoId } = deleteTodoSchema.parse(args);
 
-      const todo = await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
-      if (todo.userId.toString() !== user.id) {
-        throw new AuthError('Not authorized');
-      }
+      await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
 
       await dbTodoItems.deleteOne({ _id: new ObjectId(todoId) });
 
       return { success: true };
     },
 
-    toggleTodo: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      requireAuth(user);
-
+    toggleTodo: async (args: unknown) => {
       const { todoId } = getTodoSchema.parse(args);
 
       const todo = await dbTodoItems.requireOne({ _id: new ObjectId(todoId) });
-      if (todo.userId.toString() !== user.id) {
-        throw new AuthError('Not authorized');
-      }
 
       await dbTodoItems.updateOne(
         { _id: new ObjectId(todoId) },

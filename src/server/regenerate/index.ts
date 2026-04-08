@@ -1,6 +1,6 @@
 import z from 'zod';
-import { AuthError, time } from 'modelence';
-import { Module, ObjectId, UserInfo } from 'modelence/server';
+import { time } from 'modelence';
+import { Module, ObjectId } from 'modelence/server';
 import { dbDevices, dbSensorReadings, dbSchools, dbCredits } from './db';
 
 export default new Module('regenerate', {
@@ -8,11 +8,7 @@ export default new Module('regenerate', {
 
   queries: {
     // Get dashboard stats
-    getDashboardStats: async (_args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    getDashboardStats: async (_args: unknown) => {
       const [devices, schools, credits, readings] = await Promise.all([
         dbDevices.fetch({}),
         dbSchools.fetch({}),
@@ -44,11 +40,7 @@ export default new Module('regenerate', {
     },
 
     // Get all devices
-    getDevices: async (_args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    getDevices: async (_args: unknown) => {
       const devices = await dbDevices.fetch({}, { sort: { registeredAt: -1 } });
       return devices.map((d) => ({
         _id: d._id.toString(),
@@ -63,11 +55,7 @@ export default new Module('regenerate', {
     },
 
     // Get schools
-    getSchools: async (_args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    getSchools: async (_args: unknown) => {
       const schools = await dbSchools.fetch({}, { sort: { createdAt: -1 } });
       return schools.map((s) => ({
         _id: s._id.toString(),
@@ -79,11 +67,7 @@ export default new Module('regenerate', {
     },
 
     // Get sensor readings for a device
-    getDeviceReadings: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    getDeviceReadings: async (args: unknown) => {
       const { deviceId } = z.object({ deviceId: z.string() }).parse(args);
       const readings = await dbSensorReadings.fetch(
         { deviceId: new ObjectId(deviceId) },
@@ -100,11 +84,7 @@ export default new Module('regenerate', {
     },
 
     // Get impact data for charts (historical trend)
-    getImpactHistory: async (_args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    getImpactHistory: async (_args: unknown) => {
       // Get data for the last 30 days
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -178,11 +158,7 @@ export default new Module('regenerate', {
 
   mutations: {
     // Register a new school
-    createSchool: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    createSchool: async (args: unknown) => {
       const { name, city } = z
         .object({
           name: z.string().min(1),
@@ -201,11 +177,7 @@ export default new Module('regenerate', {
     },
 
     // Register a repurposed device
-    registerDevice: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    registerDevice: async (args: unknown) => {
       const { name, deviceType, location, sensorTypes, schoolId } = z
         .object({
           name: z.string().min(1),
@@ -241,11 +213,7 @@ export default new Module('regenerate', {
     },
 
     // Record sensor reading (simulates IoT data)
-    recordReading: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    recordReading: async (args: unknown) => {
       const { deviceId, sensorType, value, unit } = z
         .object({
           deviceId: z.string(),
@@ -271,11 +239,7 @@ export default new Module('regenerate', {
     },
 
     // Update device status
-    updateDeviceStatus: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    updateDeviceStatus: async (args: unknown) => {
       const { deviceId, status } = z
         .object({
           deviceId: z.string(),
@@ -287,11 +251,7 @@ export default new Module('regenerate', {
     },
 
     // Remove a device and related sensor readings
-    removeDevice: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    removeDevice: async (args: unknown) => {
       const { deviceId } = z
         .object({
           deviceId: z.string(),
@@ -310,11 +270,7 @@ export default new Module('regenerate', {
     },
 
     // Remove a school if it has no registered devices
-    removeSchool: async (args: unknown, { user }: { user: UserInfo | null }) => {
-      if (!user) {
-        throw new AuthError('Not authenticated');
-      }
-
+    removeSchool: async (args: unknown) => {
       const { schoolId } = z
         .object({
           schoolId: z.string(),
