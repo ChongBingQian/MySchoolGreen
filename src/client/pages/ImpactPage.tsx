@@ -73,7 +73,7 @@ export default function ImpactPage() {
   return (
     <Page>
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
+        <div className="mb-6 rise-in" style={{ animationDelay: '40ms' }}>
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
             <TrendingUp className="w-8 h-8 text-[#547599]" />
             Impact Summary
@@ -82,7 +82,7 @@ export default function ImpactPage() {
         </div>
 
         {!hasData ? (
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-blue-50 border-blue-200 rise-in" style={{ animationDelay: '100ms' }}>
             <CardContent className="p-8 text-center">
               <TrendingUp className="w-16 h-16 text-blue-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No Impact Data Yet</h3>
@@ -99,7 +99,10 @@ export default function ImpactPage() {
           <>
             {/* Current Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <Card className="border-indigo-200 bg-indigo-50">
+              <Card
+                className="border-indigo-200 bg-indigo-50 rise-in"
+                style={{ animationDelay: '100ms' }}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
@@ -113,7 +116,10 @@ export default function ImpactPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-green-200 bg-green-50">
+              <Card
+                className="border-green-200 bg-green-50 rise-in"
+                style={{ animationDelay: '160ms' }}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -129,7 +135,10 @@ export default function ImpactPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-amber-200 bg-amber-50">
+              <Card
+                className="border-amber-200 bg-amber-50 rise-in"
+                style={{ animationDelay: '220ms' }}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
@@ -143,7 +152,10 @@ export default function ImpactPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-blue-200 bg-blue-50">
+              <Card
+                className="border-blue-200 bg-blue-50 rise-in"
+                style={{ animationDelay: '280ms' }}
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -161,7 +173,7 @@ export default function ImpactPage() {
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Devices & CO2 Chart */}
-              <Card>
+              <Card className="rise-in" style={{ animationDelay: '340ms' }}>
                 <CardHeader>
                   <CardTitle className="text-lg">Devices & CO₂ Offset Trend</CardTitle>
                 </CardHeader>
@@ -202,7 +214,7 @@ export default function ImpactPage() {
               </Card>
 
               {/* Credits & Schools Chart */}
-              <Card>
+              <Card className="rise-in" style={{ animationDelay: '400ms' }}>
                 <CardHeader>
                   <CardTitle className="text-lg">Credits & Schools Growth</CardTitle>
                 </CardHeader>
@@ -244,7 +256,10 @@ export default function ImpactPage() {
             </div>
 
             {/* Summary Text */}
-            <Card className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
+            <Card
+              className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200 rise-in"
+              style={{ animationDelay: '460ms' }}
+            >
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Your Impact Journey</h3>
                 <p className="text-[#f2f6fb] leading-relaxed">

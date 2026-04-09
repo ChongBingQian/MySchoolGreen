@@ -3,7 +3,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { modelenceQuery, modelenceMutation, createQueryKey } from '@/client/lib/cloudflare/modelenceReactQuery';
+import {
+  modelenceQuery,
+  modelenceMutation,
+  createQueryKey,
+} from '@/client/lib/cloudflare/modelenceReactQuery';
 import { Button } from '@/client/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/client/components/ui/Card';
 import { Input } from '@/client/components/ui/Input';
@@ -36,7 +40,12 @@ export default function TodoPage() {
   return (
     <Page>
       <div className="max-w-2xl mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Todo List</h1>
+        <h1
+          className="text-2xl font-bold text-gray-900 mb-6 rise-in"
+          style={{ animationDelay: '40ms' }}
+        >
+          Todo List
+        </h1>
         <TodoForm />
         <TodoList />
       </div>
@@ -80,7 +89,7 @@ function TodoForm() {
   };
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 rise-in" style={{ animationDelay: '100ms' }}>
       <CardHeader>
         <CardTitle className="text-lg">Add New Todo</CardTitle>
       </CardHeader>
@@ -178,7 +187,7 @@ function TodoList() {
 
   if (!todos || todos.length === 0) {
     return (
-      <Card>
+      <Card className="rise-in" style={{ animationDelay: '160ms' }}>
         <CardContent className="py-12 text-center text-gray-500">
           No todos yet. Add one above to get started!
         </CardContent>
@@ -187,14 +196,20 @@ function TodoList() {
   }
 
   return (
-    <Card>
+    <Card className="rise-in" style={{ animationDelay: '160ms' }}>
       <CardHeader>
         <CardTitle className="text-lg">Your Todos ({todos.length})</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <ul className="divide-y divide-gray-100">
-          {todos.map((todo) => (
-            <TodoItem key={todo._id} todo={todo} onToggle={handleToggle} onDelete={handleDelete} />
+          {todos.map((todo, index) => (
+            <TodoItem
+              key={todo._id}
+              todo={todo}
+              onToggle={handleToggle}
+              onDelete={handleDelete}
+              index={index}
+            />
           ))}
         </ul>
       </CardContent>
@@ -206,11 +221,15 @@ interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  index: number;
 }
 
-function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+function TodoItem({ todo, onToggle, onDelete, index }: TodoItemProps) {
   return (
-    <li className="flex items-start gap-3 p-4 hover:bg-gray-50 transition-colors">
+    <li
+      className="flex items-start gap-3 p-4 hover:bg-gray-50 transition-colors rise-in"
+      style={{ animationDelay: `${220 + index * 40}ms` }}
+    >
       <button
         type="button"
         onClick={() => onToggle(todo._id)}

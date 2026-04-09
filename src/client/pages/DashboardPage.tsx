@@ -213,7 +213,7 @@ export default function DashboardPage() {
   return (
     <Page>
       <div className="max-w-7xl mx-auto py-6 px-4 md:py-8 space-y-6">
-        <div className="mb-8">
+        <div className="mb-8 rise-in" style={{ animationDelay: '40ms' }}>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-900">
             Interactive Impact Dashboard
           </h1>
@@ -228,38 +228,49 @@ export default function DashboardPage() {
         ) : data ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <StatCard
-                title="Active Sensors"
-                value={data.activeDevices}
-                subtitle={`${data.totalDevices} total devices`}
-                icon={Smartphone}
-                color="bg-cyan-600"
-              />
-              <StatCard
-                title="Schools"
-                value={data.totalSchools}
-                subtitle="Participating"
-                icon={School}
-                color="bg-indigo-600"
-              />
-              <StatCard
-                title="Regenerative Credits"
-                value={data.totalCredits}
-                subtitle="Earned total"
-                icon={Award}
-                color="bg-amber-500"
-              />
-              <StatCard
-                title="CO2 Offset"
-                value={`${data.co2OffsetKg} kg`}
-                subtitle="Monthly estimate"
-                icon={Leaf}
-                color="bg-emerald-600"
-              />
+              <div className="rise-in" style={{ animationDelay: '90ms' }}>
+                <StatCard
+                  title="Active Sensors"
+                  value={data.activeDevices}
+                  subtitle={`${data.totalDevices} total devices`}
+                  icon={Smartphone}
+                  color="bg-cyan-600"
+                />
+              </div>
+              <div className="rise-in" style={{ animationDelay: '150ms' }}>
+                <StatCard
+                  title="Schools"
+                  value={data.totalSchools}
+                  subtitle="Participating"
+                  icon={School}
+                  color="bg-indigo-600"
+                />
+              </div>
+              <div className="rise-in" style={{ animationDelay: '210ms' }}>
+                <StatCard
+                  title="Regenerative Credits"
+                  value={data.totalCredits}
+                  subtitle="Earned total"
+                  icon={Award}
+                  color="bg-amber-500"
+                />
+              </div>
+              <div className="rise-in" style={{ animationDelay: '270ms' }}>
+                <StatCard
+                  title="CO2 Offset"
+                  value={`${data.co2OffsetKg} kg`}
+                  subtitle="Monthly estimate"
+                  icon={Leaf}
+                  color="bg-emerald-600"
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-              <Card className="xl:col-span-2 border-slate-200">
+              <Card
+                className="xl:col-span-2 border-slate-200 rise-in"
+                style={{ animationDelay: '330ms' }}
+              >
                 <CardHeader>
                   <CardTitle className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <span>30-Day Trend Explorer</span>
@@ -354,7 +365,10 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-slate-200 bg-gradient-to-br from-white to-slate-100/70">
+              <Card
+                className="border-slate-200 bg-gradient-to-br from-white to-slate-100/70 rise-in"
+                style={{ animationDelay: '390ms' }}
+              >
                 <CardHeader>
                   <CardTitle>Impact Storyline</CardTitle>
                 </CardHeader>
@@ -394,7 +408,7 @@ export default function DashboardPage() {
               </Card>
             </div>
 
-            <Card className="border-slate-200">
+            <Card className="border-slate-200 rise-in" style={{ animationDelay: '450ms' }}>
               <CardHeader>
                 <CardTitle>Combined Growth View</CardTitle>
               </CardHeader>
@@ -455,7 +469,10 @@ export default function DashboardPage() {
             </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2 border-slate-200">
+              <Card
+                className="lg:col-span-2 border-slate-200 rise-in"
+                style={{ animationDelay: '510ms' }}
+              >
                 <CardHeader>
                   <CardTitle>Recent Sensor Readings</CardTitle>
                 </CardHeader>
@@ -494,7 +511,7 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-slate-200">
+              <Card className="border-slate-200 rise-in" style={{ animationDelay: '570ms' }}>
                 <CardHeader>
                   <CardTitle>Reading Mix</CardTitle>
                 </CardHeader>
@@ -528,7 +545,10 @@ export default function DashboardPage() {
               </Card>
             </div>
 
-            <Card className="mt-0 border-slate-200 bg-gradient-to-r from-emerald-50 to-cyan-50">
+            <Card
+              className="mt-0 border-slate-200 bg-gradient-to-r from-emerald-50 to-cyan-50 rise-in"
+              style={{ animationDelay: '630ms' }}
+            >
               <CardHeader>
                 <CardTitle>Narrative Summary</CardTitle>
               </CardHeader>

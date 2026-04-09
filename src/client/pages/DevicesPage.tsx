@@ -179,7 +179,10 @@ export default function DevicesPage() {
   return (
     <Page>
       <div className="max-w-6xl mx-auto py-8 px-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-8">
+        <div
+          className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start mb-8 rise-in"
+          style={{ animationDelay: '40ms' }}
+        >
           <div className="min-w-0">
             <h1 className="text-3xl font-bold text-gray-900">Device Management</h1>
             <p className="text-gray-600 mt-2">
@@ -204,7 +207,10 @@ export default function DevicesPage() {
 
         {/* Add School Modal */}
         {showAddSchool && (
-          <Card className="mb-6 border-blue-200 bg-blue-50">
+          <Card
+            className="mb-6 border-blue-200 bg-blue-50 rise-in"
+            style={{ animationDelay: '90ms' }}
+          >
             <CardHeader>
               <CardTitle>Register New School</CardTitle>
             </CardHeader>
@@ -243,7 +249,10 @@ export default function DevicesPage() {
 
         {/* Add Device Modal */}
         {showAddDevice && (
-          <Card className="mb-6 border-emerald-200 bg-emerald-50">
+          <Card
+            className="mb-6 border-emerald-200 bg-emerald-50 rise-in"
+            style={{ animationDelay: '130ms' }}
+          >
             <CardHeader>
               <CardTitle>Register Repurposed Device</CardTitle>
             </CardHeader>
@@ -328,12 +337,17 @@ export default function DevicesPage() {
         )}
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-500">Loading...</div>
+          <div
+            className="text-center py-12 text-gray-500 rise-in"
+            style={{ animationDelay: '180ms' }}
+          >
+            Loading...
+          </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Devices List */}
             <div className="lg:col-span-2">
-              <Card>
+              <Card className="rise-in" style={{ animationDelay: '220ms' }}>
                 <CardHeader>
                   <CardTitle>Registered Devices</CardTitle>
                 </CardHeader>
@@ -345,10 +359,11 @@ export default function DevicesPage() {
                     </p>
                   ) : (
                     <div className="space-y-4">
-                      {devices.map((device) => (
+                      {devices.map((device, index) => (
                         <div
                           key={device._id}
-                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border rounded-lg hover:bg-gray-50"
+                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 border rounded-lg hover:bg-gray-50 rise-in"
+                          style={{ animationDelay: `${260 + index * 45}ms` }}
                         >
                           <div className="flex items-start sm:items-center gap-4 min-w-0">
                             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
@@ -405,7 +420,7 @@ export default function DevicesPage() {
 
             {/* Schools List */}
             <div>
-              <Card>
+              <Card className="rise-in" style={{ animationDelay: '280ms' }}>
                 <CardHeader>
                   <CardTitle>Participating Schools</CardTitle>
                 </CardHeader>
@@ -414,8 +429,12 @@ export default function DevicesPage() {
                     <p className="text-gray-500 text-center py-8">No schools registered yet.</p>
                   ) : (
                     <div className="space-y-3">
-                      {schools.map((school) => (
-                        <div key={school._id} className="p-3 border rounded-lg">
+                      {schools.map((school, index) => (
+                        <div
+                          key={school._id}
+                          className="p-3 border rounded-lg rise-in"
+                          style={{ animationDelay: `${320 + index * 50}ms` }}
+                        >
                           <h4 className="font-medium text-gray-900">{school.name}</h4>
                           <p className="text-sm text-gray-500">{school.city}</p>
                           <p className="text-sm font-semibold text-amber-600 mt-1">

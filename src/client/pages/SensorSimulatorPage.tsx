@@ -103,7 +103,7 @@ export default function SensorSimulatorPage() {
   return (
     <Page>
       <div className="max-w-6xl mx-auto py-8 px-4">
-        <div className="mb-8">
+        <div className="mb-8 rise-in" style={{ animationDelay: '40ms' }}>
           <h1 className="text-3xl font-bold text-gray-900">Sensor Simulator</h1>
           <p className="text-gray-600 mt-2">Simulate IoT sensor readings from repurposed devices</p>
         </div>
@@ -111,7 +111,7 @@ export default function SensorSimulatorPage() {
         {devicesLoading ? (
           <div className="text-center py-12 text-gray-500">Loading devices...</div>
         ) : activeDevices.length === 0 ? (
-          <Card>
+          <Card className="rise-in" style={{ animationDelay: '100ms' }}>
             <CardContent className="py-12 text-center">
               <Activity className="w-12 h-12 mx-auto text-gray-400 mb-4" />
               <h3 className="text-lg font-semibold text-gray-900">No Active Devices</h3>
@@ -127,7 +127,7 @@ export default function SensorSimulatorPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Device Selection & Simulation */}
             <div className="space-y-6">
-              <Card>
+              <Card className="rise-in" style={{ animationDelay: '100ms' }}>
                 <CardHeader>
                   <CardTitle>Select Device</CardTitle>
                   <CardDescription>Choose an active device to simulate readings</CardDescription>
@@ -151,7 +151,7 @@ export default function SensorSimulatorPage() {
               {selectedDevice && (
                 <>
                   {/* Quick Simulation */}
-                  <Card>
+                  <Card className="rise-in" style={{ animationDelay: '160ms' }}>
                     <CardHeader>
                       <CardTitle>Quick Simulate</CardTitle>
                       <CardDescription>Generate random realistic readings</CardDescription>
@@ -178,7 +178,7 @@ export default function SensorSimulatorPage() {
                   </Card>
 
                   {/* Manual Entry */}
-                  <Card>
+                  <Card className="rise-in" style={{ animationDelay: '220ms' }}>
                     <CardHeader>
                       <CardTitle>Manual Entry</CardTitle>
                       <CardDescription>Enter specific sensor values</CardDescription>
@@ -229,7 +229,7 @@ export default function SensorSimulatorPage() {
             </div>
 
             {/* Readings History */}
-            <Card>
+            <Card className="rise-in" style={{ animationDelay: '280ms' }}>
               <CardHeader>
                 <CardTitle>Recent Readings</CardTitle>
                 <CardDescription>
@@ -251,13 +251,14 @@ export default function SensorSimulatorPage() {
                   </p>
                 ) : (
                   <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                    {readings.map((reading) => {
+                    {readings.map((reading, index) => {
                       const preset = sensorPresets.find((p) => p.type === reading.sensorType);
                       const Icon = preset?.icon || Activity;
                       return (
                         <div
                           key={reading._id}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg rise-in"
+                          style={{ animationDelay: `${320 + index * 35}ms` }}
                         >
                           <div className="flex items-center gap-3">
                             <Icon className="w-4 h-4 text-gray-600" />
