@@ -1,70 +1,46 @@
-# MySchoolGreen (Cloudflare Pages + Workers)
+# 🌿 MySchoolGreen
 
-A React + TypeScript app deployed with:
-- Cloudflare Pages for the frontend SPA
-- Cloudflare Workers for API endpoints
+**A Circular Economy Digital System for Sustainable Campus Management**
 
-## Getting Started
+[![Built with React](https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-61DAFB?logo=react)](https://reactjs.org/)
+[![Deployed on Cloudflare](https://img.shields.io/badge/Infrastructure-Cloudflare%20Pages%20%2B%20Workers-F38020?logo=cloudflare)](https://www.cloudflare.com/)
+[![Code Style: Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
-```bash
-npm install
-npm run dev
-```
+MySchoolGreen is a specialized digital platform designed to integrate **Circular Economy** principles into school ecosystems. By leveraging AI-driven automation and edge computing, the system facilitates waste reduction, resource regeneration, and sustainable behavioral shifts across campus.
 
-The development server runs with Vite.
+## 🚀 Live Demo
+[View Deployment](https://myschoolgreen.bqianchong.workers.dev/)
 
-## Available Scripts
+---
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Build production assets to `dist` |
-| `npm run start` | Preview the production build locally |
-| `npm run deploy:pages` | Build and deploy frontend to Cloudflare Pages |
-| `npm run deploy:worker` | Deploy Worker API using `wrangler.worker.toml` |
-| `npm run deploy:cloudflare` | Deploy Pages then Worker |
-| `npm run deploy` | Alias of `npm run deploy:cloudflare` |
-| `npm run lint` | Check for linting errors |
-| `npm run lint:fix` | Auto-fix linting errors |
-| `npm run format` | Format code with Prettier |
+## ✨ Key Features
 
-## Cloudflare Deployment
+- **AI Sustainability Engine**: Utilizes Cloudflare AI (`TodoAI`) to generate intelligent suggestions for green initiatives and waste reduction.
+- **Edge-Native Architecture**: Built with Cloudflare Workers for ultra-low latency API responses.
+- **Circular Resource Tracking**: A dashboard focused on eliminating waste and regenerating value within the school community.
+- **Unified Deployment**: A streamlined CI/CD workflow that deploys both the React SPA and the serverless backend in a single command.
 
-1. Authenticate Wrangler:
+---
 
-```bash
-npx wrangler login
-```
+## 🛠 Tech Stack
 
-2. Deploy frontend (Pages):
+- **Frontend**: [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Backend**: [Cloudflare Workers](https://workers.cloudflare.com/)
+- **AI Integration**: Cloudflare Workers AI (Llama/Mistral models via binding)
+- **Infrastructure**: [Cloudflare Pages](https://pages.cloudflare.com/)
 
-```bash
-npm run deploy:pages
-```
+---
 
-3. Deploy backend API (Worker):
+## 💻 Local Development
 
-```bash
-npm run deploy:worker
-```
+### Prerequisites
+- Node.js (v18+)
+- Cloudflare Account & Wrangler CLI
 
-4. Deploy both in sequence:
-
-```bash
-npm run deploy
-```
-
-## Worker Endpoints
-
-- `GET /api/health`
-- `GET /api/time`
-- `POST /api/ai/todo-suggestions`
-
-Worker entrypoint: `src/worker/index.ts`
-
-Cloudflare AI binding is configured in `wrangler.worker.toml` under `[ai]` with `binding = "TodoAI"`.
-
-## Notes
-
-- Client data/auth currently use local browser storage through a Cloudflare-compatible client shim in `src/client/lib/cloudflare/`.
-- Existing `src/server/` code is kept for reference.
+### Setup
+1. **Clone & Install**
+   ```bash
+   git clone [https://github.com/ChongBingQian/MYSchoolGreen.git](https://github.com/ChongBingQian/MYSchoolGreen.git)
+   cd MYSchoolGreen
+   npm install
