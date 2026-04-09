@@ -23,7 +23,7 @@ interface NavLink {
 
 function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <header className="sticky top-0 z-40 h-16 flex items-center justify-between px-4 border-b border-[#4f5661] bg-[#2c3138]">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-4 border-b border-[#4f5661] bg-[#2c3138]">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden">
           <Menu className="w-5 h-5" />
@@ -40,7 +40,19 @@ function Header({ onMenuClick }: { onMenuClick: () => void }) {
   );
 }
 
-function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function Sidebar({
+  isOpen,
+  onClose,
+  isDesktopExpanded,
+  onDesktopEnter,
+  onDesktopLeave,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  isDesktopExpanded: boolean;
+  onDesktopEnter: () => void;
+  onDesktopLeave: () => void;
+}) {
   const location = useLocation();
 
   const navLinks: NavLink[] = [
@@ -65,8 +77,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 
       {/* Sidebar */}
       <aside
+        onMouseEnter={onDesktopEnter}
+        onMouseLeave={onDesktopLeave}
         className={cn(
-          'fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#2c3138] border-r border-[#4f5661] transform transition-transform duration-200 ease-in-out lg:top-16 lg:bottom-0 lg:w-20 lg:translate-x-0 lg:transform-none lg:transition-none',
+          'fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#2c3138] border-r border-[#4f5661] transform transition-transform duration-200 ease-in-out lg:top-16 lg:bottom-0 lg:translate-x-0 lg:transform-none lg:transition-[width] lg:duration-200',
+          isDesktopExpanded ? 'lg:w-64' : 'lg:w-20',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
@@ -88,7 +103,8 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 to={link.to}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all lg:justify-center lg:px-0',
+                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all lg:px-3',
+                  isDesktopExpanded ? 'lg:justify-start' : 'lg:justify-center',
                   isActive
                     ? 'bg-[#547599]/25 text-white lg:bg-[#547599]/35'
                     : 'text-[#c2cad4] hover:bg-[#343941] hover:text-white'
@@ -96,7 +112,16 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 title={link.label}
               >
                 <Icon className="w-5 h-5" />
-                <span className="lg:sr-only">{link.label}</span>
+                <span
+                  className={cn(
+                    'lg:transition-opacity lg:duration-150',
+                    isDesktopExpanded
+                      ? 'lg:opacity-100 lg:static'
+                      : 'lg:opacity-0 lg:absolute lg:pointer-events-none'
+                  )}
+                >
+                  {link.label}
+                </span>
               </Link>
             );
           })}
@@ -107,7 +132,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 }
 
 function PageWrapper({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden">{children}</div>;
+  return (
+    <div className="flex flex-col min-h-screen max-w-full overflow-x-hidden pt-16">{children}</div>
+  );
 }
 
 function PageBody({ children, className, isLoading = false }: PageProps) {
@@ -133,12 +160,23 @@ function PageBody({ children, className, isLoading = false }: PageProps) {
 
 export default function Page({ children, className, isLoading = false }: PageProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(false);
 
   return (
     <PageWrapper>
       <Header onMenuClick={() => setSidebarOpen(true)} />
+      <div
+        className="hidden lg:block fixed left-0 top-16 bottom-0 w-8 z-40"
+        onMouseEnter={() => setDesktopSidebarExpanded(true)}
+      />
       <div className="flex flex-1 min-h-0">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isDesktopExpanded={desktopSidebarExpanded}
+          onDesktopEnter={() => setDesktopSidebarExpanded(true)}
+          onDesktopLeave={() => setDesktopSidebarExpanded(false)}
+        />
         <PageBody className={className} isLoading={isLoading}>
           {children}
         </PageBody>
