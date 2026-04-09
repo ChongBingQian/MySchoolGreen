@@ -19,11 +19,11 @@ const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>(
         {label && (
           <Label htmlFor={htmlFor} className="block">
             {label}
-            {required && <span className="text-red-500 ml-1">*</span>}
+            {required && <span className="text-[#69503b] ml-1">*</span>}
           </Label>
         )}
         {children}
-        {description && !error && <p className="text-sm text-gray-500">{description}</p>}
+        {description && !error && <p className="text-sm text-[#98a4b2]">{description}</p>}
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
     );

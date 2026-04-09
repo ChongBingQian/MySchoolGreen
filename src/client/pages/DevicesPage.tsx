@@ -45,13 +45,13 @@ function getDeviceIcon(type: string) {
 function getStatusColor(status: string) {
   switch (status) {
     case 'active':
-      return 'bg-green-100 text-green-800';
+      return 'bg-[#418228]/20 text-[#caefbf]';
     case 'inactive':
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-[#343941] text-[#c2cad4]';
     case 'maintenance':
-      return 'bg-yellow-100 text-yellow-800';
+      return 'bg-[#69503b]/25 text-[#e3d2c1]';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-[#343941] text-[#c2cad4]';
   }
 }
 
@@ -264,7 +264,7 @@ export default function DevicesPage() {
                     <select
                       id="deviceType"
                       name="deviceType"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-[#4f5661] rounded-lg bg-[#2c3138] text-[#edf1f5]"
                       required
                     >
                       <option value="tablet">Tablet</option>
@@ -286,7 +286,7 @@ export default function DevicesPage() {
                     <select
                       id="schoolId"
                       name="schoolId"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                      className="w-full px-3 py-2 border border-[#4f5661] rounded-lg bg-[#2c3138] text-[#edf1f5]"
                       required
                     >
                       <option value="">Select a school</option>

@@ -75,7 +75,7 @@ export default function ImpactPage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
-            <TrendingUp className="w-8 h-8 text-indigo-600" />
+            <TrendingUp className="w-8 h-8 text-[#547599]" />
             Impact Summary
           </h1>
           <p className="text-gray-600">Track your environmental impact over time</p>
@@ -103,7 +103,7 @@ export default function ImpactPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                      <Smartphone className="w-5 h-5 text-indigo-600" />
+                      <Smartphone className="w-5 h-5 text-[#547599]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-indigo-900">{currentStats.devices}</p>
@@ -117,7 +117,7 @@ export default function ImpactPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Leaf className="w-5 h-5 text-green-600" />
+                      <Leaf className="w-5 h-5 text-[#418228]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-green-900">
@@ -133,7 +133,7 @@ export default function ImpactPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                      <Award className="w-5 h-5 text-amber-600" />
+                      <Award className="w-5 h-5 text-[#69503b]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-amber-900">{currentStats.credits}</p>
@@ -147,7 +147,7 @@ export default function ImpactPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <School className="w-5 h-5 text-blue-600" />
+                      <School className="w-5 h-5 text-[#547599]" />
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-blue-900">{currentStats.schools}</p>
@@ -168,31 +168,32 @@ export default function ImpactPage() {
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={impactHistory}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis dataKey="date" stroke="#6b7280" fontSize={12} tickMargin={10} />
-                      <YAxis stroke="#6b7280" fontSize={12} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#4f5661" />
+                      <XAxis dataKey="date" stroke="#c2cad4" fontSize={12} tickMargin={10} />
+                      <YAxis stroke="#c2cad4" fontSize={12} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#fff',
-                          border: '1px solid #e5e7eb',
+                          backgroundColor: '#2c3138',
+                          border: '1px solid #4f5661',
                           borderRadius: '8px',
+                          color: '#edf1f5',
                         }}
                       />
                       <Legend />
                       <Line
                         type="monotone"
                         dataKey="devices"
-                        stroke="#4f46e5"
+                        stroke="#547599"
                         strokeWidth={2}
-                        dot={{ fill: '#4f46e5', r: 3 }}
+                        dot={{ fill: '#547599', r: 3 }}
                         name="Active Devices"
                       />
                       <Line
                         type="monotone"
                         dataKey="co2Offset"
-                        stroke="#22c55e"
+                        stroke="#418228"
                         strokeWidth={2}
-                        dot={{ fill: '#22c55e', r: 3 }}
+                        dot={{ fill: '#418228', r: 3 }}
                         name="CO₂ Offset (kg)"
                       />
                     </LineChart>
@@ -208,31 +209,32 @@ export default function ImpactPage() {
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={impactHistory}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis dataKey="date" stroke="#6b7280" fontSize={12} tickMargin={10} />
-                      <YAxis stroke="#6b7280" fontSize={12} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#4f5661" />
+                      <XAxis dataKey="date" stroke="#c2cad4" fontSize={12} tickMargin={10} />
+                      <YAxis stroke="#c2cad4" fontSize={12} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: '#fff',
-                          border: '1px solid #e5e7eb',
+                          backgroundColor: '#2c3138',
+                          border: '1px solid #4f5661',
                           borderRadius: '8px',
+                          color: '#edf1f5',
                         }}
                       />
                       <Legend />
                       <Line
                         type="monotone"
                         dataKey="credits"
-                        stroke="#f59e0b"
+                        stroke="#69503b"
                         strokeWidth={2}
-                        dot={{ fill: '#f59e0b', r: 3 }}
+                        dot={{ fill: '#69503b', r: 3 }}
                         name="Credits Earned"
                       />
                       <Line
                         type="monotone"
                         dataKey="schools"
-                        stroke="#3b82f6"
+                        stroke="#547599"
                         strokeWidth={2}
-                        dot={{ fill: '#3b82f6', r: 3 }}
+                        dot={{ fill: '#547599', r: 3 }}
                         name="Schools Participating"
                       />
                     </LineChart>

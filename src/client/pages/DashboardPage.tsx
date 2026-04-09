@@ -153,26 +153,26 @@ export default function DashboardPage() {
     {
       key: 'co2Offset',
       label: 'CO2 Offset',
-      color: '#10b981',
+      color: '#418228',
       unit: 'kg',
       description: 'Estimated monthly reduction from active devices.',
     },
     {
       key: 'devices',
       label: 'Active Devices',
-      color: '#0284c7',
+      color: '#547599',
       description: 'Repurposed devices currently reporting data.',
     },
     {
       key: 'credits',
       label: 'Credits',
-      color: '#f59e0b',
+      color: '#69503b',
       description: 'Cumulative regenerative credits over 30 days.',
     },
     {
       key: 'schools',
       label: 'Schools',
-      color: '#6366f1',
+      color: '#547599',
       description: 'Participating school communities in your network.',
     },
   ];
@@ -293,10 +293,10 @@ export default function DashboardPage() {
                       <div
                         className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
                           metricDelta.direction === 'up'
-                            ? 'bg-emerald-100 text-emerald-700'
+                            ? 'bg-[#418228]/20 text-[#c9f1bb]'
                             : metricDelta.direction === 'down'
                               ? 'bg-rose-100 text-rose-700'
-                              : 'bg-slate-100 text-slate-600'
+                              : 'bg-[#343941] text-[#c2cad4]'
                         }`}
                       >
                         {metricDelta.direction === 'up' ? (
@@ -318,17 +318,19 @@ export default function DashboardPage() {
                             <stop offset="95%" stopColor={selected.color} stopOpacity={0.05} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="4 4" stroke="#e2e8f0" />
+                        <CartesianGrid strokeDasharray="4 4" stroke="#4f5661" />
                         <XAxis
                           dataKey="date"
-                          tick={{ fill: '#64748b', fontSize: 12 }}
+                          tick={{ fill: '#c2cad4', fontSize: 12 }}
                           tickMargin={10}
                         />
-                        <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
+                        <YAxis tick={{ fill: '#c2cad4', fontSize: 12 }} />
                         <Tooltip
                           contentStyle={{
                             borderRadius: '10px',
-                            border: '1px solid #e2e8f0',
+                            border: '1px solid #4f5661',
+                            background: '#2c3138',
+                            color: '#edf1f5',
                           }}
                           formatter={(value: ValueType | undefined) => {
                             if (value === undefined || value === null) {
@@ -399,24 +401,26 @@ export default function DashboardPage() {
               <CardContent>
                 <ResponsiveContainer width="100%" height={320}>
                   <LineChart data={impactHistory}>
-                    <CartesianGrid strokeDasharray="4 4" stroke="#e2e8f0" />
+                    <CartesianGrid strokeDasharray="4 4" stroke="#4f5661" />
                     <XAxis
                       dataKey="date"
-                      tick={{ fill: '#64748b', fontSize: 12 }}
+                      tick={{ fill: '#c2cad4', fontSize: 12 }}
                       tickMargin={10}
                     />
-                    <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
+                    <YAxis tick={{ fill: '#c2cad4', fontSize: 12 }} />
                     <Tooltip
                       contentStyle={{
                         borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #4f5661',
+                        background: '#2c3138',
+                        color: '#edf1f5',
                       }}
                     />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="devices"
-                      stroke="#0284c7"
+                      stroke="#547599"
                       strokeWidth={2.5}
                       dot={false}
                       name="Active Devices"
@@ -424,7 +428,7 @@ export default function DashboardPage() {
                     <Line
                       type="monotone"
                       dataKey="co2Offset"
-                      stroke="#10b981"
+                      stroke="#418228"
                       strokeWidth={2.5}
                       dot={false}
                       name="CO2 Offset (kg)"
@@ -432,7 +436,7 @@ export default function DashboardPage() {
                     <Line
                       type="monotone"
                       dataKey="credits"
-                      stroke="#f59e0b"
+                      stroke="#69503b"
                       strokeWidth={2.5}
                       dot={false}
                       name="Credits"
@@ -440,7 +444,7 @@ export default function DashboardPage() {
                     <Line
                       type="monotone"
                       dataKey="schools"
-                      stroke="#6366f1"
+                      stroke="#547599"
                       strokeWidth={2.5}
                       dot={false}
                       name="Schools"

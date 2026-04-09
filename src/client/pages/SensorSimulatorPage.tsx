@@ -134,7 +134,7 @@ export default function SensorSimulatorPage() {
                 </CardHeader>
                 <CardContent>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border border-[#4f5661] rounded-lg bg-[#2c3138] text-[#edf1f5]"
                     value={selectedDevice}
                     onChange={(e) => setSelectedDevice(e.target.value)}
                   >
@@ -190,7 +190,7 @@ export default function SensorSimulatorPage() {
                           <select
                             id="sensorType"
                             name="sensorType"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                            className="w-full px-3 py-2 border border-[#4f5661] rounded-lg bg-[#2c3138] text-[#edf1f5]"
                             required
                           >
                             {sensorPresets.map((preset) => (

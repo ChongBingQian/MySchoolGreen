@@ -23,7 +23,7 @@ interface NavLink {
 
 function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+    <header className="flex items-center justify-between px-4 py-3 border-b border-[#4f5661] bg-[#2c3138]">
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" onClick={onMenuClick} className="lg:hidden">
           <Menu className="w-5 h-5" />
@@ -34,7 +34,7 @@ function Header({ onMenuClick }: { onMenuClick: () => void }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-600">MySchoolGreen</span>
+        <span className="text-sm text-[#c2cad4]">MySchoolGreen</span>
       </div>
     </header>
   );
@@ -66,11 +66,11 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out',
+          'fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#2c3138] border-r border-[#4f5661] transform transition-transform duration-200 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden">
+        <div className="flex items-center justify-between p-4 border-b border-[#4f5661] lg:hidden">
           <h2 className="text-lg font-semibold">Menu</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="w-5 h-5" />
@@ -90,8 +90,8 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    ? 'bg-[#547599]/25 text-white'
+                    : 'text-[#c2cad4] hover:bg-[#343941] hover:text-white'
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -114,7 +114,7 @@ function PageBody({ children, className, isLoading = false }: PageProps) {
     <div className="flex flex-1 w-full min-h-0">
       <main
         className={cn(
-          'flex flex-col flex-1 p-4 space-y-4 overflow-x-hidden bg-gradient-to-br from-emerald-50 via-white to-green-50',
+          'flex flex-col flex-1 p-4 space-y-4 overflow-x-hidden bg-gradient-to-br from-[#24282d] via-[#2c3138] to-[#343941]',
           className
         )}
       >
