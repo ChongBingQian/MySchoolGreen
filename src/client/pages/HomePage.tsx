@@ -32,16 +32,22 @@ type ImpactHistoryPoint = {
   schools: number;
 };
 
-function formatDelta(delta: number) {
-  if (delta > 0) {
-    return `+${delta}`;
+function formatDelta(delta: number, decimals = 0) {
+  const rounded = Number(delta.toFixed(decimals));
+
+  if (rounded > 0) {
+    return `+${rounded}`;
   }
 
-  if (delta < 0) {
-    return `${delta}`;
+  if (rounded < 0) {
+    return `${rounded}`;
   }
 
   return '0';
+}
+
+function formatToHundredths(value: number) {
+  return Number(value.toFixed(2));
 }
 
 export default function HomePage() {
@@ -80,8 +86,8 @@ export default function HomePage() {
     },
     {
       title: 'CO2 Offset',
-      value: `${stats?.co2OffsetKg ?? 0} kg`,
-      delta: formatDelta(trend.co2Offset),
+      value: `${formatToHundredths(stats?.co2OffsetKg ?? 0)} kg`,
+      delta: formatDelta(trend.co2Offset, 2),
       description: 'Estimated monthly carbon reduction from active deployments.',
       icon: Leaf,
       tone: 'from-emerald-500 to-green-500',
@@ -155,7 +161,7 @@ export default function HomePage() {
                 <div className="flex justify-between items-center">
                   <span className="text-[#3f4a55]">CO2 Offset</span>
                   <span className="font-semibold text-[#1f262d]">
-                    {formatDelta(trend.co2Offset)} kg
+                    {formatDelta(trend.co2Offset, 2)} kg
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
