@@ -68,6 +68,7 @@
 	.text-slate-600,
 	.text-gray-500,
 	.text-slate-500,
+	.text-slate-700,
 	.text-indigo-700,
 	.text-blue-700,
 	.text-green-700,
@@ -79,7 +80,6 @@
 
 	.text-gray-400,
 	.text-slate-400,
-	.text-slate-700,
 	.text-gray-300 {
 		color: var(--text-soft) !important;
 	}
