@@ -247,7 +247,7 @@ export default function ImpactPage() {
             <Card className="mt-6 bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Your Impact Journey</h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-[#f2f6fb] leading-relaxed">
                   Over the past 30 days, your contributions have grown steadily. With{' '}
                   <strong>{currentStats.devices} active devices</strong>, you&apos;ve offset{' '}
                   <strong>{currentStats.co2Offset}kg of CO₂</strong> and earned{' '}

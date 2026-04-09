@@ -262,7 +262,7 @@ export default function HomePage() {
           </Link>
         </section>
 
-        <p className="text-center text-sm text-[#d5dde7] max-w-2xl mx-auto">
+        <p className="text-center text-sm text-[#2f3740] max-w-2xl mx-auto">
           Start in Dashboard for a full contribution view, then dive into Impact for trend
           storytelling and progress over time.
         </p>

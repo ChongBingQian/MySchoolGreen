@@ -533,7 +533,7 @@ export default function DashboardPage() {
                 <CardTitle>Narrative Summary</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-800 leading-relaxed">
+                <p className="text-[#f2f6fb] leading-relaxed">
                   Your network currently sustains{' '}
                   <strong>{data.activeDevices} active sensors</strong> across{' '}
                   <strong>{data.totalSchools} schools</strong>. That translates to an estimated{' '}
