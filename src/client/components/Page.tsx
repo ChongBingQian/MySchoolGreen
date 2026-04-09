@@ -2,7 +2,7 @@
  * Page wrapper template to be used as a base for all pages.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LoadingSpinner from '@/client/components/LoadingSpinner';
 import { Button } from '@/client/components/ui/Button';
@@ -80,7 +80,7 @@ function Sidebar({
         onMouseEnter={onDesktopEnter}
         onMouseLeave={onDesktopLeave}
         className={cn(
-          'fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#2c3138] border-r border-[#4f5661] transform transition-transform duration-200 ease-in-out lg:top-16 lg:bottom-0 lg:translate-x-0 lg:transform-none lg:transition-[width] lg:duration-200',
+          'fixed top-0 bottom-0 left-0 z-50 w-64 bg-[#2c3138] border-r border-[#4f5661] transform transition-transform duration-200 ease-in-out lg:top-16 lg:bottom-0 lg:translate-x-0 lg:transform-none lg:transition-[width] lg:duration-300 lg:ease-out',
           isDesktopExpanded ? 'lg:w-64' : 'lg:w-20',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -103,7 +103,7 @@ function Sidebar({
                 to={link.to}
                 onClick={onClose}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all lg:px-3',
+                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors lg:px-3',
                   isDesktopExpanded ? 'lg:justify-start' : 'lg:justify-center',
                   isActive
                     ? 'bg-[#547599]/25 text-white lg:bg-[#547599]/35'
@@ -114,10 +114,10 @@ function Sidebar({
                 <Icon className="w-5 h-5" />
                 <span
                   className={cn(
-                    'lg:transition-opacity lg:duration-150',
+                    'lg:transition-all lg:duration-200 lg:ease-out',
                     isDesktopExpanded
-                      ? 'lg:opacity-100 lg:static'
-                      : 'lg:opacity-0 lg:absolute lg:pointer-events-none'
+                      ? 'lg:opacity-100 lg:translate-x-0 lg:static'
+                      : 'lg:opacity-0 lg:-translate-x-1 lg:absolute lg:pointer-events-none'
                   )}
                 >
                   {link.label}
@@ -161,21 +161,50 @@ function PageBody({ children, className, isLoading = false }: PageProps) {
 export default function Page({ children, className, isLoading = false }: PageProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(false);
+  const collapseTimeoutRef = useRef<number | null>(null);
+
+  const openDesktopSidebar = () => {
+    if (collapseTimeoutRef.current !== null) {
+      window.clearTimeout(collapseTimeoutRef.current);
+      collapseTimeoutRef.current = null;
+    }
+
+    setDesktopSidebarExpanded(true);
+  };
+
+  const closeDesktopSidebar = () => {
+    if (collapseTimeoutRef.current !== null) {
+      window.clearTimeout(collapseTimeoutRef.current);
+    }
+
+    collapseTimeoutRef.current = window.setTimeout(() => {
+      setDesktopSidebarExpanded(false);
+      collapseTimeoutRef.current = null;
+    }, 140);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (collapseTimeoutRef.current !== null) {
+        window.clearTimeout(collapseTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <PageWrapper>
       <Header onMenuClick={() => setSidebarOpen(true)} />
       <div
         className="hidden lg:block fixed left-0 top-16 bottom-0 w-8 z-40"
-        onMouseEnter={() => setDesktopSidebarExpanded(true)}
+        onMouseEnter={openDesktopSidebar}
       />
       <div className="flex flex-1 min-h-0">
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           isDesktopExpanded={desktopSidebarExpanded}
-          onDesktopEnter={() => setDesktopSidebarExpanded(true)}
-          onDesktopLeave={() => setDesktopSidebarExpanded(false)}
+          onDesktopEnter={openDesktopSidebar}
+          onDesktopLeave={closeDesktopSidebar}
         />
         <PageBody className={className} isLoading={isLoading}>
           {children}
