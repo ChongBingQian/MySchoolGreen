@@ -113,16 +113,16 @@ export default function HomePage() {
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
             <div className="lg:col-span-2">
-              <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold text-[#edf1f5] mb-4">
+              <p className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold text-[#2f3740] mb-4">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 Dynamic entry point for your sustainability mission
               </p>
 
-              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-slate-900 max-w-3xl">
+              <h1 className="text-3xl md:text-5xl font-bold leading-tight text-[#1f262d] max-w-3xl">
                 From retired devices to measurable climate action.
               </h1>
 
-              <p className="mt-4 text-[#d5dde7] text-base md:text-lg max-w-2xl">
+              <p className="mt-4 text-[#3f4a55] text-base md:text-lg max-w-2xl">
                 Follow the story in real time: devices are repurposed, schools activate sensors, and
                 impact compounds through credits and carbon reductions.
               </p>
@@ -137,7 +137,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   to="/impact"
-                  className="inline-flex items-center gap-2 rounded-xl bg-white text-[#edf1f5] border border-slate-200 px-4 py-2.5 text-sm font-semibold hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white text-[#2f3740] border border-slate-200 px-4 py-2.5 text-sm font-semibold hover:bg-slate-100 transition-colors"
                 >
                   View Impact Story
                   <TrendingUp className="w-4 h-4" />
@@ -146,24 +146,24 @@ export default function HomePage() {
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 md:p-5 backdrop-blur">
-              <p className="text-sm font-semibold text-[#edf1f5] mb-3">Impact This Week</p>
+              <p className="text-sm font-semibold text-[#1f262d] mb-3">Impact This Week</p>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#d5dde7]">Devices Activated</span>
-                  <span className="font-semibold text-[#edf1f5]">{formatDelta(trend.devices)}</span>
+                  <span className="text-[#3f4a55]">Devices Activated</span>
+                  <span className="font-semibold text-[#1f262d]">{formatDelta(trend.devices)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#d5dde7]">CO2 Offset</span>
-                  <span className="font-semibold text-[#edf1f5]">
+                  <span className="text-[#3f4a55]">CO2 Offset</span>
+                  <span className="font-semibold text-[#1f262d]">
                     {formatDelta(trend.co2Offset)} kg
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-[#d5dde7]">Credits Earned</span>
-                  <span className="font-semibold text-[#edf1f5]">{formatDelta(trend.credits)}</span>
+                  <span className="text-[#3f4a55]">Credits Earned</span>
+                  <span className="font-semibold text-[#1f262d]">{formatDelta(trend.credits)}</span>
                 </div>
                 <div className="h-px bg-slate-200" />
-                <p className="text-xs text-[#d5dde7]">
+                <p className="text-xs text-[#3f4a55]">
                   Weekly movement based on your rolling 30-day impact history.
                 </p>
               </div>
