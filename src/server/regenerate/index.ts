@@ -3,18 +3,55 @@ import { time } from 'modelence';
 import { Module, ObjectId } from 'modelence/server';
 import { dbDevices, dbSensorReadings, dbSchools, dbCredits } from './db';
 
+type DeviceDoc = {
+  _id: ObjectId;
+  name: string;
+  deviceType: string;
+  location: string;
+  sensorTypes: string[];
+  status: string;
+  schoolId: ObjectId;
+  registeredAt: Date | string | number;
+  lastReadingAt?: Date | string | number;
+};
+
+type SensorReadingDoc = {
+  _id: ObjectId;
+  deviceId: ObjectId;
+  sensorType: string;
+  value: number;
+  unit: string;
+  recordedAt: Date | string | number;
+};
+
+type SchoolDoc = {
+  _id: ObjectId;
+  name: string;
+  city: string;
+  totalCredits: number;
+  createdAt: Date | string | number;
+};
+
+type CreditDoc = {
+  _id: ObjectId;
+  schoolId: ObjectId;
+  amount: number;
+  reason: string;
+  earnedAt: Date | string | number;
+};
+
 export default new Module('regenerate', {
   stores: [dbDevices, dbSensorReadings, dbSchools, dbCredits],
 
   queries: {
     // Get dashboard stats
     getDashboardStats: async (_args: unknown) => {
-      const [devices, schools, credits, readings] = await Promise.all([
+      const [devices, schools, credits, readings] = (await Promise.all([
         dbDevices.fetch({}),
         dbSchools.fetch({}),
         dbCredits.fetch({}),
         dbSensorReadings.fetch({}, { limit: 100, sort: { recordedAt: -1 } }),
-      ]);
+      ])) as [DeviceDoc[], SchoolDoc[], CreditDoc[], SensorReadingDoc[]];
 
       const totalCredits = credits.reduce((sum, c) => sum + c.amount, 0);
       const activeDevices = devices.filter((d) => d.status === 'active').length;
@@ -41,7 +78,7 @@ export default new Module('regenerate', {
 
     // Get all devices
     getDevices: async (_args: unknown) => {
-      const devices = await dbDevices.fetch({}, { sort: { registeredAt: -1 } });
+      const devices = (await dbDevices.fetch({}, { sort: { registeredAt: -1 } })) as DeviceDoc[];
       return devices.map((d) => ({
         _id: d._id.toString(),
         name: d.name,
@@ -49,6 +86,7 @@ export default new Module('regenerate', {
         location: d.location,
         sensorTypes: d.sensorTypes,
         status: d.status,
+        schoolId: d.schoolId.toString(),
         registeredAt: d.registeredAt,
         lastReadingAt: d.lastReadingAt,
       }));
@@ -56,7 +94,7 @@ export default new Module('regenerate', {
 
     // Get schools
     getSchools: async (_args: unknown) => {
-      const schools = await dbSchools.fetch({}, { sort: { createdAt: -1 } });
+      const schools = (await dbSchools.fetch({}, { sort: { createdAt: -1 } })) as SchoolDoc[];
       return schools.map((s) => ({
         _id: s._id.toString(),
         name: s.name,
@@ -69,10 +107,10 @@ export default new Module('regenerate', {
     // Get sensor readings for a device
     getDeviceReadings: async (args: unknown) => {
       const { deviceId } = z.object({ deviceId: z.string() }).parse(args);
-      const readings = await dbSensorReadings.fetch(
+      const readings = (await dbSensorReadings.fetch(
         { deviceId: new ObjectId(deviceId) },
         { limit: 50, sort: { recordedAt: -1 } }
-      );
+      )) as SensorReadingDoc[];
 
       return readings.map((r) => ({
         _id: r._id.toString(),
@@ -89,11 +127,11 @@ export default new Module('regenerate', {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const [devices, credits, schools] = await Promise.all([
+      const [devices, credits, schools] = (await Promise.all([
         dbDevices.fetch({}),
         dbCredits.fetch({ earnedAt: { $gte: thirtyDaysAgo } }, { sort: { earnedAt: 1 } }),
         dbSchools.fetch({}),
-      ]);
+      ])) as [DeviceDoc[], CreditDoc[], SchoolDoc[]];
 
       // Group data by day
       const dailyData = new Map<

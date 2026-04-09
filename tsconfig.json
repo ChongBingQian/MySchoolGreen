@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "modelence/client": ["./src/client/lib/cloudflare/modelenceClient.ts"],
@@ -9,7 +8,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "ESNext",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "ES2022",

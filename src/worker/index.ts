@@ -33,25 +33,13 @@ type SuggestionRequestBody = {
   }>;
   schools?: Array<{ name?: string; city?: string; totalCredits?: number }>;
   devices?: Array<{
+    _id?: string;
     name?: string;
     status?: string;
     sensorTypes?: string[];
     location?: string;
+    schoolId?: string;
     lastReadingAt?: string;
-  }>;
-  activeDevices?: Array<{
-    name?: string;
-    status?: string;
-    sensorTypes?: string[];
-    location?: string;
-    lastReadingAt?: string;
-  }>;
-  environmentReadings?: Array<{
-    deviceId?: string;
-    sensorType?: string;
-    value?: number;
-    unit?: string;
-    recordedAt?: string;
   }>;
   dashboard?: {
     totalDevices?: number;
@@ -67,6 +55,21 @@ type SuggestionRequestBody = {
       recordedAt?: string;
     }>;
   };
+};
+
+type SensorIssue = {
+  severity: SuggestionPriority;
+  message: string;
+};
+
+type DeviceInsight = {
+  deviceId: string;
+  name: string;
+  location: string;
+  school: string;
+  stale: boolean;
+  latestReadings: string[];
+  issues: SensorIssue[];
 };
 
 function json(data: unknown, status = 200): Response {
@@ -146,112 +149,201 @@ function parseSuggestionsFromAi(text: string): TodoSuggestion[] {
   }
 }
 
-function normalizeSensorType(sensorType: string): string {
-  return sensorType.replace(/[_-]+/g, ' ').trim().toLowerCase();
+function evaluateSensorIssue(
+  sensorTypeRaw: string,
+  valueRaw: number,
+  unitRaw: string
+): SensorIssue | null {
+  const sensorType = sensorTypeRaw.toLowerCase();
+  const value = Number(valueRaw);
+  const unit = unitRaw.trim();
+
+  if (sensorType === 'air_quality') {
+    if (value > 100) {
+      return {
+        severity: 'high',
+        message: `air quality is unhealthy (${value} ${unit || 'AQI'})`,
+      };
+    }
+    if (value > 70) {
+      return {
+        severity: 'medium',
+        message: `air quality needs attention (${value} ${unit || 'AQI'})`,
+      };
+    }
+  }
+
+  if (sensorType === 'temperature') {
+    if (value > 32) {
+      return {
+        severity: 'high',
+        message: `temperature is too high (${value} ${unit || 'C'})`,
+      };
+    }
+    if (value < 16) {
+      return {
+        severity: 'medium',
+        message: `temperature is too low (${value} ${unit || 'C'})`,
+      };
+    }
+  }
+
+  if (sensorType === 'soil_moisture') {
+    if (value < 30) {
+      return {
+        severity: 'high',
+        message: `soil moisture is low (${value}${unit || '%'})`,
+      };
+    }
+    if (value > 80) {
+      return {
+        severity: 'medium',
+        message: `soil moisture may be too high (${value}${unit || '%'})`,
+      };
+    }
+  }
+
+  if (sensorType === 'water_ph') {
+    if (value < 6.5 || value > 8.5) {
+      return {
+        severity: 'high',
+        message: `water pH is out of safe range (${value}${unit})`,
+      };
+    }
+  }
+
+  return null;
 }
 
-function summarizeEnvironmentReadings(body: SuggestionRequestBody): string {
-  const dashboardReadings = Array.isArray(body.dashboard?.recentReadings)
+function buildDeviceInsights(body: SuggestionRequestBody): DeviceInsight[] {
+  const devices = Array.isArray(body.devices) ? body.devices : [];
+  const schools = Array.isArray(body.schools) ? body.schools : [];
+  const readings = Array.isArray(body.dashboard?.recentReadings)
     ? body.dashboard?.recentReadings
     : [];
-  const rawReadings = Array.isArray(body.environmentReadings)
-    ? body.environmentReadings
-    : dashboardReadings;
 
-  const readings = rawReadings
-    .map((reading) => {
-      const sensorType = normalizeSensorType(String(reading.sensorType ?? ''));
-      const value = Number(reading.value);
-      const unit = String(reading.unit ?? '').trim();
+  const schoolNameById = new Map<string, string>();
+  schools.forEach((school) => {
+    const id = String((school as Record<string, unknown>)._id ?? '').trim();
+    if (id) {
+      schoolNameById.set(id, String(school.name ?? 'Unknown school').trim() || 'Unknown school');
+    }
+  });
 
-      if (!sensorType || Number.isNaN(value)) {
-        return null;
+  const latestByDeviceAndSensor = new Map<
+    string,
+    Record<string, { value: number; unit: string; recordedAt: number }>
+  >();
+
+  readings.forEach((reading) => {
+    const deviceId = String(reading?.deviceId ?? '').trim();
+    const sensorType = String(reading?.sensorType ?? '').trim();
+    const value = Number(reading?.value);
+    const unit = String(reading?.unit ?? '').trim();
+    const recordedAt = Date.parse(String(reading?.recordedAt ?? ''));
+
+    if (!deviceId || !sensorType || Number.isNaN(value) || Number.isNaN(recordedAt)) {
+      return;
+    }
+
+    const bySensor = latestByDeviceAndSensor.get(deviceId) ?? {};
+    const existing = bySensor[sensorType];
+    if (!existing || recordedAt > existing.recordedAt) {
+      bySensor[sensorType] = { value, unit, recordedAt };
+      latestByDeviceAndSensor.set(deviceId, bySensor);
+    }
+  });
+
+  const now = Date.now();
+  const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+
+  return devices
+    .filter((device) => String(device.status ?? '').toLowerCase() === 'active')
+    .map((device) => {
+      const deviceId = String(device._id ?? '').trim() || String(device.name ?? '').trim();
+      const name = String(device.name ?? 'Unnamed device').trim() || 'Unnamed device';
+      const location = String(device.location ?? 'unknown location').trim() || 'unknown location';
+      const school = schoolNameById.get(String(device.schoolId ?? '').trim()) ?? 'Unknown school';
+
+      const lastReadingAtRaw = String(device.lastReadingAt ?? '').trim();
+      const lastReadingAtMs = Date.parse(lastReadingAtRaw);
+      const stale =
+        !lastReadingAtRaw || Number.isNaN(lastReadingAtMs) || now - lastReadingAtMs > threeDaysMs;
+
+      const latestBySensor = latestByDeviceAndSensor.get(deviceId) ?? {};
+      const latestReadings: string[] = [];
+      const issues: SensorIssue[] = [];
+
+      Object.entries(latestBySensor).forEach(([sensorType, reading]) => {
+        latestReadings.push(
+          `${sensorType}: ${reading.value}${reading.unit ? ` ${reading.unit}` : ''}`
+        );
+        const issue = evaluateSensorIssue(sensorType, reading.value, reading.unit);
+        if (issue) {
+          issues.push(issue);
+        }
+      });
+
+      if (stale) {
+        issues.push({
+          severity: 'medium',
+          message: 'device has no recent readings in the last 3 days',
+        });
       }
 
       return {
-        sensorType,
-        value,
-        unit,
+        deviceId,
+        name,
+        location,
+        school,
+        stale,
+        latestReadings,
+        issues,
       };
-    })
-    .filter((item): item is { sensorType: string; value: number; unit: string } => Boolean(item));
-
-  if (readings.length === 0) {
-    return 'No recent environment readings available.';
-  }
-
-  const grouped = new Map<string, Array<{ value: number; unit: string }>>();
-  readings.forEach((reading) => {
-    const bucket = grouped.get(reading.sensorType) ?? [];
-    bucket.push({ value: reading.value, unit: reading.unit });
-    grouped.set(reading.sensorType, bucket);
-  });
-
-  return Array.from(grouped.entries())
-    .slice(0, 8)
-    .map(([sensorType, values]) => {
-      const average = values.reduce((sum, row) => sum + row.value, 0) / values.length;
-      const latest = values[0];
-      return `${sensorType}: latest ${latest.value.toFixed(2)}${latest.unit ? ` ${latest.unit}` : ''}, avg ${average.toFixed(2)}`;
-    })
-    .join(' | ');
+    });
 }
 
-function summarizeActiveDevices(body: SuggestionRequestBody): string {
-  const activeDeviceList = Array.isArray(body.activeDevices)
-    ? body.activeDevices
-    : Array.isArray(body.devices)
-      ? body.devices.filter((device) => String(device.status ?? '').toLowerCase() === 'active')
-      : [];
+function buildFallbackSuggestions(insights: DeviceInsight[]): TodoSuggestion[] {
+  const suggestions: TodoSuggestion[] = [];
 
-  if (activeDeviceList.length === 0) {
-    return 'No active devices tracked.';
-  }
+  const critical = insights
+    .flatMap((insight) =>
+      insight.issues
+        .filter((issue) => issue.severity === 'high')
+        .map((issue) => ({ insight, issue }))
+    )
+    .slice(0, 3);
 
-  return activeDeviceList
-    .slice(0, 10)
-    .map((device) => {
-      const name = String(device.name ?? 'Unnamed device').trim();
-      const location = String(device.location ?? 'unknown location').trim();
-      const sensorTypes = Array.isArray(device.sensorTypes)
-        ? device.sensorTypes.join(', ')
-        : 'unknown sensors';
-      const lastReadingAt = String(device.lastReadingAt ?? '').trim();
-      return `${name} @ ${location}; sensors: ${sensorTypes}; last reading: ${lastReadingAt || 'not yet recorded'}`;
-    })
-    .join(' | ');
-}
-
-function ensureSchoolRepairSuggestion(
-  suggestions: TodoSuggestion[],
-  body: SuggestionRequestBody
-): TodoSuggestion[] {
-  const hasSchoolRepairSuggestion = suggestions.some((suggestion) => {
-    const text = `${suggestion.title} ${suggestion.description} ${suggestion.reason}`.toLowerCase();
-    return /(school|campus)/.test(text) && /(repair|maintain|maintenance|service)/.test(text);
+  critical.forEach(({ insight, issue }) => {
+    suggestions.push({
+      title: `Repair and calibrate ${insight.name}`,
+      description: `Coordinate with ${insight.school} to inspect ${insight.name} at ${insight.location}, verify sensor calibration, and retest today.`,
+      reason: `Detected issue: ${issue.message}.`,
+      priority: 'high',
+    });
   });
 
-  if (hasSchoolRepairSuggestion) {
-    return suggestions;
+  const staleDevices = insights.filter((insight) => insight.stale).slice(0, 2);
+  staleDevices.forEach((insight) => {
+    suggestions.push({
+      title: `Schedule maintenance for ${insight.name}`,
+      description: `Ask ${insight.school} team to check power, connectivity, and sensor health for ${insight.name} at ${insight.location}.`,
+      reason: 'The device has not reported fresh data recently.',
+      priority: 'medium',
+    });
+  });
+
+  if (suggestions.length === 0 && insights.length > 0) {
+    const first = insights[0];
+    suggestions.push({
+      title: `Plan preventive check for ${first.school}`,
+      description: `Run a weekly preventive inspection of active devices, starting with ${first.name} in ${first.location}.`,
+      reason: 'Routine checks keep school devices reliable and avoid data gaps.',
+      priority: 'low',
+    });
   }
 
-  const activeDevice = (
-    Array.isArray(body.activeDevices) ? body.activeDevices : body.devices || []
-  ).find((device) => String(device.status ?? '').toLowerCase() === 'active');
-
-  const deviceName = String(activeDevice?.name ?? 'an active monitoring device').trim();
-  const location = String(activeDevice?.location ?? 'the school site').trim();
-
-  return [
-    {
-      title: 'Coordinate school repair check for active device',
-      description: `Ask a participating school team to inspect and repair ${deviceName} at ${location} to keep environmental monitoring reliable.`,
-      reason:
-        'Active devices need regular school-supported maintenance to avoid data gaps and downtime.',
-      priority: 'high' as SuggestionPriority,
-    },
-    ...suggestions,
-  ].slice(0, 6);
+  return suggestions.slice(0, 6);
 }
 
 function summarizeContext(body: SuggestionRequestBody): string {
@@ -265,11 +357,28 @@ function summarizeContext(body: SuggestionRequestBody): string {
 
   const schools = Array.isArray(body.schools) ? body.schools : [];
   const devices = Array.isArray(body.devices) ? body.devices : [];
-  const activeDevicesCount = devices.filter(
+  const activeDevices = devices.filter(
     (device) => String(device.status ?? '').toLowerCase() === 'active'
   ).length;
+  const insights = buildDeviceInsights(body);
+  const issueCount = insights.reduce((sum, insight) => sum + insight.issues.length, 0);
 
   const dashboard = body.dashboard ?? {};
+
+  const activeDeviceSnapshots = insights
+    .slice(0, 10)
+    .map((insight) => {
+      const readings =
+        insight.latestReadings.length > 0
+          ? insight.latestReadings.join(', ')
+          : 'no recent readings';
+      const issues =
+        insight.issues.length > 0
+          ? insight.issues.map((issue) => issue.message).join('; ')
+          : 'no issues detected';
+      return `${insight.school} | ${insight.name} @ ${insight.location} | readings: ${readings} | issues: ${issues}`;
+    })
+    .join('\n');
 
   return [
     `Total todos: ${todos.length}`,
@@ -278,13 +387,13 @@ function summarizeContext(body: SuggestionRequestBody): string {
     `Open todo titles: ${recentOpenTitles.join(' | ') || 'none'}`,
     `Schools tracked: ${schools.length}`,
     `Devices tracked: ${devices.length}`,
-    `Active devices count: ${activeDevicesCount}`,
-    `Active device details: ${summarizeActiveDevices(body)}`,
-    `Environment snapshot: ${summarizeEnvironmentReadings(body)}`,
+    `Active devices: ${activeDevices}`,
     `Dashboard total devices: ${Number(dashboard.totalDevices ?? devices.length)}`,
     `Dashboard total schools: ${Number(dashboard.totalSchools ?? schools.length)}`,
     `Dashboard total credits: ${Number(dashboard.totalCredits ?? 0)}`,
     `Dashboard CO2 offset kg: ${Number(dashboard.co2OffsetKg ?? 0)}`,
+    `Detected device issues: ${issueCount}`,
+    `Active device environment snapshots:\n${activeDeviceSnapshots || 'none'}`,
   ].join('\n');
 }
 
@@ -311,39 +420,35 @@ async function handleTodoSuggestionRequest(request: Request, env: Env): Promise<
   }
 
   const contextSummary = summarizeContext(body);
+  const insights = buildDeviceInsights(body);
 
   const aiResult = await env.TodoAI.run('@cf/meta/llama-3.1-8b-instruct', {
     messages: [
       {
         role: 'system',
         content:
-          'You are a sustainability operations assistant for schools. Respond only with JSON in this exact shape: {"suggestions":[{"title":"string","description":"string","reason":"string","priority":"high|medium|low"}]}. Every suggestion must be practical, short, and grounded in the provided active-device and environment-reading data. Include at least one suggestion that asks a school to participate in repairing or maintaining an active device.',
+          'You are a sustainability operations assistant for schools. Respond only with JSON in this shape: {"suggestions":[{"title":"string","description":"string","reason":"string","priority":"high|medium|low"}]}. Build suggestions from active devices and detected environment signals. Include at least one school-device repair or maintenance action when any issue is detected. Keep suggestions practical and concise.',
       },
       {
         role: 'user',
-        content:
-          `Generate 4 to 6 actionable todo suggestions based on this app data:\n${contextSummary}\n` +
-          'Rules: prioritize active devices first; reference environment readings where possible; avoid generic suggestions that are not tied to the data; include one school-participation repair task.',
+        content: `Generate 4 to 6 actionable todo suggestions based on this app data:\n${contextSummary}`,
       },
     ],
     temperature: 0.35,
     max_tokens: 700,
   });
 
-  const aiSuggestions = parseSuggestionsFromAi(extractAiText(aiResult));
-  const suggestions = ensureSchoolRepairSuggestion(aiSuggestions, body);
+  const suggestions = parseSuggestionsFromAi(extractAiText(aiResult));
+  const fallbackSuggestions = buildFallbackSuggestions(insights);
 
-  if (suggestions.length === 0) {
-    return json(
-      {
-        ok: false,
-        message: 'AI did not return valid suggestions',
-      },
-      502
-    );
+  if (suggestions.length === 0 && fallbackSuggestions.length === 0) {
+    return json({ ok: false, message: 'AI did not return valid suggestions' }, 502);
   }
 
-  return json({ ok: true, suggestions });
+  return json({
+    ok: true,
+    suggestions: suggestions.length > 0 ? suggestions : fallbackSuggestions,
+  });
 }
 
 export default {
