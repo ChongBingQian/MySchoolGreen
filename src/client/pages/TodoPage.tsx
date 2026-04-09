@@ -54,6 +54,16 @@ type DashboardStats = {
   totalSchools: number;
   totalCredits: number;
   co2OffsetKg: number;
+  recentReadings?: SensorReading[];
+};
+
+type SensorReading = {
+  _id: string;
+  deviceId: string;
+  sensorType: string;
+  value: number;
+  unit: string;
+  recordedAt: string;
 };
 
 type TodoSuggestion = {
@@ -131,6 +141,8 @@ function TodoSuggestions() {
           schools,
           devices,
           dashboard,
+          activeDevices: devices.filter((device) => device.status === 'active'),
+          environmentReadings: dashboard?.recentReadings ?? [],
         }),
       });
 
@@ -175,7 +187,7 @@ function TodoSuggestions() {
       <CardContent>
         {suggestions.length === 0 ? (
           <p className="text-sm text-gray-600">
-            Generate suggestions using your current todos, schools, devices, and impact stats.
+            Generate suggestions based on active devices and detected environment readings.
           </p>
         ) : (
           <ul className="space-y-3">
